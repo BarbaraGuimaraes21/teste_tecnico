@@ -47,6 +47,26 @@ def processar_dados(users,todos):
         })
     return report
 
+def enviar_relatorio(report):
+    if not report:
+        print("Relatório vazio, não será enviado.")
+        return
+    
+    payload = json.dumps(report)
+    headers = {'Content-type': 'application/json'}
+
+    try:
+        response = requests.post(
+        'https://jsonplaceholder.typicode.com/posts',
+        data=payload,
+        headers=headers
+        )
+        response.raise_for_status()
+        print("Relatório enviado com sucesso!")
+        print("Resposta da API:", response.json())
+    except requests.exceptions.RequestException as e:
+        print(f"Erro ao enviar o relatório: {e}")
+
 if __name__ == "__main__":
     users = obter_dados_usuarios()
     todos = obter_dados_todos()
@@ -56,5 +76,6 @@ if __name__ == "__main__":
         final_report = processar_dados(users, todos)
         if final_report:
             print("Relatório de tarefas criado com sucesso!")
+            enviar_relatorio(final_report)
     else:
         print("Falha ao obter dados.")
